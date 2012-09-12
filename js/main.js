@@ -1,18 +1,16 @@
 $(function() {
 	
 	// Create a popcorn instance by calling Popcorn("#id-of-my-video")
-<<<<<<< HEAD
   var pop = Popcorn("#hudlVideoPlayer");
   var annotationTextId = 0;
   var annotationTelestrateId = 0;
   var annotationSpotId = 0;
-=======
+
     var pop = Popcorn("#hudlVideoPlayer");
     
     // Current Annotations
     var allNotes = $.jStorage.index();
     console.log(allNotes);
->>>>>>> Adding Local Storage.
 
   // add a footnote at 2 seconds, and remove it at 6 seconds
   pop.jquery({
@@ -86,7 +84,6 @@ $(function() {
 	$('#annotation-telestrate').sketch();
 	
 	$('.annotation-text').draggable({
-<<<<<<< HEAD
     containment: "#video-wrapper",
     scroll:      false 
   });
@@ -95,7 +92,6 @@ $(function() {
     containment: "#video-wrapper",
     scroll:      false 
   });
-=======
 	    containment: "#video-wrapper",
 	    scroll:      false,
 	    stop: function(event, ui) {
@@ -125,7 +121,6 @@ $(function() {
 		
 	});
 
->>>>>>> Adding Local Storage.
 
   $('annotation-telestrate').draggable({
     containment: "#video-wrapper",

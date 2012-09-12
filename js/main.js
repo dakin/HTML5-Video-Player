@@ -11,12 +11,23 @@ $(function() {
       target: "annotation-text-1"
     });
 
+    pop.code{
+      start: 1,
+      end: 10,
+      onStart: function(){
+        $('#annotation-telestrate').show();
+      },
+      onEnd: function(){
+        $('#annotation-telestrate').hide();
+      }
+    }
+
     // play the video right away
     pop.play();
 	
-	$('.annotation-text').draggable();
+  $('#annotation-telestrate').sketch();
 
-  $('.annotation-text div').editable()
+	$('.annotation-text').draggable();
 
   $('#new-text-annotation').click(function(){
     

@@ -1,64 +1,62 @@
 $(function() {
 	
 	// Create a popcorn instance by calling Popcorn("#id-of-my-video")
-  var pop = Popcorn("#hudlVideoPlayer");
-  var annotationTextId = 0;
-  var annotationTelestrateId = 0;
-  var annotationSpotId = 0;
+	var pop = Popcorn("#hudlVideoPlayer");
+	var annotationTextId = 0;
+	var annotationTelestrateId = 0;
+	var annotationSpotId = 0;
+	
+	// Current Annotations
+	var allNotes = $.jStorage.index();
+	console.log(allNotes);
 
-    var pop = Popcorn("#hudlVideoPlayer");
-    
-    // Current Annotations
-    var allNotes = $.jStorage.index();
-    console.log(allNotes);
-
-  // add a footnote at 2 seconds, and remove it at 6 seconds
-  pop.jquery({
-    start: 1,
-    end: 5,
-    onStart: function(){
-      $('#annotation-text-1').show();
-      $('#annotation-text-1').text('TopPlay!');
-    },
-    onEnd: function(){
-      $('#annotation-text-1').hide();
-    }
-  });
-
-  pop.jquery({
-    start: 7,
-    end: 10,
-    onStart: function(){
-      $('#annotation-text-2').show();
-      $('#annotation-text-2').text('TopPlay!');
-    },
-    onEnd: function(){
-      $('#annotation-text-1').hide();
-    }
-  });
-
-  pop.jquery({
-    start: 1,
-    end: 30,
-    onStart: function(){
-      $('#annotation-telestrate').show();
-    },
-    onEnd: function(){
-      $('#annotation-telestrate').hide();
-    }
-  })
-
-  pop.jquery({
-    start: 7,
-    end: 9,
-    onStart: function(){
-      $('#annotation-image-1').attr('src', 'images/circle.png');
-      $('#annotation-image-1').show();
-    },
-    onEnd: function(){
-      $('#annotation-image-1').hide();
-    }
-  })
+	// add a footnote at 2 seconds, and remove it at 6 seconds
+	pop.jquery({
+		start: 1,
+		end: 5,
+		onStart: function(){
+		  $('#annotation-text-1').show();
+		  $('#annotation-text-1').text('TopPlay!');
+		},
+		onEnd: function(){
+		  $('#annotation-text-1').hide();
+		}
+	});
+	
+	pop.jquery({
+		start: 7,
+		end: 10,
+		onStart: function(){
+		  $('#annotation-text-2').show();
+		  $('#annotation-text-2').text('TopPlay!');
+		},
+		onEnd: function(){
+		  $('#annotation-text-2').hide();
+		}
+	});
+	
+	pop.jquery({
+		start: 1,
+		end: 30,
+		onStart: function(){
+		  $('#annotation-telestrate').show();
+		},
+		onEnd: function(){
+		  $('#annotation-telestrate').hide();
+		}
+	});
+	
+	pop.jquery({
+		start: 7,
+		end: 9,
+		onStart: function(){
+		  $('#annotation-image-1').attr('src', 'images/circle.png');
+		  $('#annotation-image-1').show();
+		},
+		onEnd: function(){
+		  $('#annotation-image-1').hide();
+		}
+	});
 
   // play the video right away
   pop.play();
@@ -90,19 +88,16 @@ $(function() {
 
   $('.annotation-image').draggable({
     containment: "#video-wrapper",
-    scroll:      false 
-  });
-	    containment: "#video-wrapper",
-	    scroll:      false,
-	    stop: function(event, ui) {
-	    	$.jStorage.set(ui.helper.context.id,{
-	    		"id": ui.helper.context.id,
-	    		"top": ui.position.top,
-	    		"left": ui.position.left,
-	    		"content": ui.helper.context.innerHTML
-	    	});
-	    	console.log(ui.helper.context.id);
-	    }
+    scroll:      false,
+    stop: function(event, ui) {
+    	$.jStorage.set(ui.helper.context.id,{
+    		"id": ui.helper.context.id,
+    		"top": ui.position.top,
+    		"left": ui.position.left,
+    		"content": ui.helper.context.innerHTML
+    	});
+    	console.log(ui.helper.context.id);
+    }
 	});
 	
 	$('.annotation-image').draggable({

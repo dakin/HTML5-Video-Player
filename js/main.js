@@ -1,10 +1,18 @@
 $(function() {
 	
 	// Create a popcorn instance by calling Popcorn("#id-of-my-video")
+<<<<<<< HEAD
   var pop = Popcorn("#hudlVideoPlayer");
   var annotationTextId = 0;
   var annotationTelestrateId = 0;
   var annotationSpotId = 0;
+=======
+    var pop = Popcorn("#hudlVideoPlayer");
+    
+    // Current Annotations
+    var allNotes = $.jStorage.index();
+    console.log(allNotes);
+>>>>>>> Adding Local Storage.
 
   // add a footnote at 2 seconds, and remove it at 6 seconds
   pop.jquery({
@@ -78,6 +86,7 @@ $(function() {
 	$('#annotation-telestrate').sketch();
 	
 	$('.annotation-text').draggable({
+<<<<<<< HEAD
     containment: "#video-wrapper",
     scroll:      false 
   });
@@ -86,6 +95,37 @@ $(function() {
     containment: "#video-wrapper",
     scroll:      false 
   });
+=======
+	    containment: "#video-wrapper",
+	    scroll:      false,
+	    stop: function(event, ui) {
+	    	$.jStorage.set(ui.helper.context.id,{
+	    		"id": ui.helper.context.id,
+	    		"top": ui.position.top,
+	    		"left": ui.position.left,
+	    		"content": ui.helper.context.innerHTML
+	    	});
+	    	console.log(ui.helper.context.id);
+	    }
+	});
+	
+	$('.annotation-image').draggable({
+		containment: "#video-wrapper",
+		scroll:      false 
+	});
+	
+	$('#new-text-annotation').click(function(){
+		// Pause the Vidja
+		$("#hudlVideoPlayer").get(0).pause();
+    	
+    	// Create DOM Annotation
+		//$('<div id="annotation-text-' . '2' . '" class="annotation-text"></div>').appendTo('#video-wrapper');
+		
+		// Create local storage
+		
+	});
+
+>>>>>>> Adding Local Storage.
 
   $('annotation-telestrate').draggable({
     containment: "#video-wrapper",

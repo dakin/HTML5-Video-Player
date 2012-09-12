@@ -5,8 +5,8 @@ $(function() {
 
     // add a footnote at 2 seconds, and remove it at 6 seconds
     pop.footnote({
-      start: 2,
-      end: 6,
+      start: 1,
+      end: 20,
       text: "Top Play!",
       target: "annotation-text-1"
     });
@@ -14,6 +14,12 @@ $(function() {
     // play the video right away
     pop.play();
 	
-	$( "#annotation-text-1" ).draggable();
+	$('.annotation-text').draggable();
+
+  var counter = 1;
+  $('#new-text-annotation').click(function(){
+    counter++;
+    $('#annotation-text-' + counter).clone().insertAfter('.annotation-text');
+  });
 
 });

@@ -81,9 +81,15 @@ $(function() {
     containment: "#video-wrapper",
     scroll:      false 
   });
+
   $('.annotation-image').draggable({
     containment: "#video-wrapper",
     scroll:      false 
   });
+
+  $('annotation-telestrate').draggable({
+    containment: "#video-wrapper",
+    scroll:      false
+  });  
 
 });

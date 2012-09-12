@@ -9,7 +9,9 @@ document.addEventListener("DOMContentLoaded", function () {
      start: 2,
      end: 6,
      text: "Top Play!",
-     target: "annotation-text-1"
+     target: "annotation-text-1",
+     effect: "applyclass",
+     applyclass: "show"
    });
 
    // play the video right away
@@ -19,6 +21,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 $(document).ready(function() {
 
-	$( "#annotation-text-1" ).draggable();
+  $( ".annotation-text" ).draggable();
 
 });

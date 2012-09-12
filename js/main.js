@@ -11,7 +11,7 @@ $(function() {
       target: "annotation-text-1"
     });
 
-    pop.code{
+    pop.jquery({
       start: 1,
       end: 10,
       onStart: function(){
@@ -20,7 +20,7 @@ $(function() {
       onEnd: function(){
         $('#annotation-telestrate').hide();
       }
-    }
+    })
 
     // play the video right away
     pop.play();

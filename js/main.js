@@ -16,10 +16,10 @@ $(function() {
 	
 	$('.annotation-text').draggable();
 
-  var counter = 1;
+  $('.annotation-text div').editable()
+
   $('#new-text-annotation').click(function(){
-    counter++;
-    $('#annotation-text-' + counter).clone().insertAfter('.annotation-text');
+    
   });
 
 });

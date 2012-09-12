@@ -4,11 +4,16 @@ $(function() {
     var pop = Popcorn("#hudlVideoPlayer");
 
     // add a footnote at 2 seconds, and remove it at 6 seconds
-    pop.footnote({
+    pop.jquery({
       start: 1,
       end: 20,
-      text: "Top Play!",
-      target: "annotation-text-1"
+      onStart: function(){
+        $('#annotation-text-1').show();
+        $('#annotation-text-1').text('TopPlay!');
+      },
+      onEnd: function(){
+        $('#annotation-text-1').hide();
+      }
     });
 
     pop.jquery({

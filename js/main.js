@@ -6,9 +6,6 @@ $(function() {
   var annotationTelestrateId = 0;
   var annotationSpotId = 0;
   
-  var textAnnoLength = 8000;
-  
-  
   // Poop out the stuff that's already in your local storage!
   var allAnnos = $.jStorage.index();
   var numAnnos = allAnnos.length;
@@ -23,81 +20,53 @@ $(function() {
 		  	  start: annoObject.timeStart,
 		  	  end: annoObject.timeEnd,
 		  	  onStart: function(){
-		  	    pop.pause();
 		  	    $(jqID).removeClass('hide');
-		  	    setTimeout(function() {
-		  	        $(jqID).addClass('hide');
-		  	        //pop.play();
-		  	    }, textAnnoLength);
-		  	  }
+		  	  },
+          onEnd: function(){
+            $(jqID).addClass('hide');
+          }
 		  	});
-		  } /*else if (annoObject.type == 'spot') {
-		  	$('<div id="' + annoObject.id + '" class="annotation-text hide" style="top: ' + annoObject.left + '; left: ' + annoObject.left + ';">' + annoObject.content + '</div>').appendTo('#video-wrapper');
+		  } else if (annoObject.type == 'spot') {
+		  	$('<img id="' + annoObject.id + '" src="images/circle.png" class="annotation-spot hide" style="top: ' + annoObject.left + '; left: ' + annoObject.left + ';"/>').appendTo('#video-wrapper');
 		  	pop.jquery({
 		  	  start: annoObject.timeStart,
 		  	  end: annoObject.timeEnd,
 		  	  onStart: function(){
-		  	    pop.pause();
-		  	    $(jqID).removeClass('hide');
-		  	    setTimeout(function() {
-		  	        $(jqID).addClass('hide');
-		  	        //pop.play();
-		  	    }, textAnnoLength);
-		  	  }
+            $(jqID).removeClass('hide');
+          },
+          onEnd: function(){
+            $(jqID).addClass('hide');
+          }
 		  	});
 		  } else if (annoObject.type == 'tele') {
-		  	$('<div id="' + annoObject.id + '" class="annotation-text hide" style="top: ' + annoObject.left + '; left: ' + annoObject.left + ';">' + annoObject.content + '</div>').appendTo('#video-wrapper');
+		  	$('<canvas id="' + annoObject.id + '" class="annotation-telestrate hide" width="852" height="420" style="top:-40px; left:0px;"></canvas>').appendTo('#video-wrapper');
 		  	pop.jquery({
 		  	  start: annoObject.timeStart,
 		  	  end: annoObject.timeEnd,
 		  	  onStart: function(){
-		  	    pop.pause();
-		  	    $(jqID).removeClass('hide');
-		  	    setTimeout(function() {
-		  	        $(jqID).addClass('hide');
-		  	        //pop.play();
-		  	    }, textAnnoLength);
-		  	  }
+            $(jqID).removeClass('hide');
+          },
+          onEnd: function(){
+            $(jqID).addClass('hide');
+          }
 		  	});
-		  };*/
+		  };
 	  });
   }
-	
-  // add a footnote at 2 seconds, and remove it at 6 seconds
-  pop.jquery({
-    start: 2,
-    end: 30,
-    onStart: function(){
-      $('#annotation-telestrate').show();
-    },
-    onEnd: function(){
-      $('#annotation-telestrate').hide();
-    }
-  })
-
-  pop.jquery({
-    start: 7,
-    end: 9,
-    onStart: function(){
-      $('#annotation-image-1').attr('src', 'images/circle.png');
-      $('#annotation-image-1').show();
-    },
-    onEnd: function(){
-      $('#annotation-image-1').hide();
-    }
-  })
 
   // play the video right away
   pop.play();
 	
 
-  // Append the annotation element to the video-wrapper div
+  // Do a pile of shit to get the text annotation on the screen, allow you to edit it, store it's record, etc...
   $('#new-text-annotation').click(function(){
+    $('video').get(0).pause();
     annotationTextId++;
     var fullAnnoID = 'annotation-text-' + annotationTextId;
-    var start = pop.currentTime();
-    $('<div id="' + fullAnnoID + '" class="annotation-text" style="left:100px;top:100px;">Top Play!</div>').appendTo('#video-wrapper').draggable({
-    	containment: "#video-wrapper",
+    var truestart = pop.currentTime();
+    var start = Math.round(truestart);
+    $('<div type="text" id="' + fullAnnoID + '" class="annotation-text" style="left:100px;top:100px;"><input type="text" value="Type here"/></div>').appendTo('#video-wrapper').draggable({ 
+      containment: "#video-wrapper",
     	scroll:      false,
     	stop: function(event, ui) {
     		var currentAnno = $.jStorage.get(ui.helper.context.id);
@@ -109,30 +78,108 @@ $(function() {
     			"timeEnd": currentAnno.timeEnd,
     			"top": ui.position.top+'px',
     			"left": ui.position.left+'px',
-    			"content": ui.helper.context.innerHTML
+    			"content": textValue
     		});
     	}
     });
+    $('input').blur(function(){
+      var textValue = $(this).val();
+      $.jStorage.set(fullAnnoID,{
+        "id": fullAnnoID,
+        "type": 'text',
+        "timeStart": start,
+        "timeEnd": start+3,
+        "top": '100px',
+        "left": '100px',
+        "content": textValue
+      });
+      console.log(fullAnnoID);
+      setTimeout(function(){
+        $('video').get(0).play();
+        $('#' + fullAnnoID).css('opacity', '0');
+      }, 1000);
+    });
+  });
+
+  // Do a pile of shit to get the image annotation on the screen and store it's record, etc...
+  $('#new-spot-annotation').click(function(){
+    $('video').get(0).pause();
+    annotationSpotId++;
+    var fullAnnoID = 'annotation-spot-' + annotationSpotId;
+    var truestart = pop.currentTime();
+    var start = Math.round(truestart);
+    $('<img type="spot" src="images/circle.png" id="' + fullAnnoID + '" class="annotation-spot" style="left:100px;top:100px;"/>').appendTo('#video-wrapper').draggable({ 
+      containment: "#video-wrapper",
+      scroll:      false,
+      stop: function(event, ui) {
+        var currentAnno = $.jStorage.get(ui.helper.context.id);
+        console.log(currentAnno);
+        $.jStorage.set(ui.helper.context.id,{
+          "id": ui.helper.context.id,
+          "type": 'spot',
+          "timeStart": currentAnno.timeStart,
+          "timeEnd": currentAnno.timeEnd,
+          "top": ui.position.top+'px',
+          "left": ui.position.left+'px',
+          "content": ''
+        });
+        $('video').get(0).play();
+        setTimeout(function(){
+          $('.annotation-spot').css('opacity', '0');
+        }, 1000);
+      }
+    });
     $.jStorage.set(fullAnnoID,{
-    	"id": fullAnnoID,
-    	"type": 'text',
-    	"timeStart": start,
-    	"timeEnd": start+1,
-    	"top": '100px',
-    	"left": '100px',
-    	"content": 'Top Play!'
+      "id": fullAnnoID,
+      "type": 'spot',
+      "timeStart": start,
+      "timeEnd": start+3,
+      "top": '100px',
+      "left": '100px',
+      "content": ''
     });
     console.log(fullAnnoID);
   });
 
+  // Do a pile of shit to get the telestration annotation on the screen and store it's record, etc...
   $('#new-telestration-annotation').click(function(){
+    $('video').get(0).pause();
     annotationTelestrateId++;
-    $('<canvas id="annotation-telestrate' + annotationTelestrateId + '" width="852" height="430" class="hide"></canvas>').appendTo('#video-wrapper');
-  });
-
-  $('#new-spot-annotation').click(function(){
-    annotationSpotId++;
-    $('<img src="" id="annotation-image-' + annotationSpotId + '" class="annotation-image hide" />').appendTo('#video-wrapper');
+    var fullAnnoID = 'annotation-telestrate-' + annotationTelestrateId;
+    var truestart = pop.currentTime();
+    var start = Math.round(truestart);
+    $('<canvas id="' + fullAnnoID + '" class="annotation-telestrate" width="852" height="420" style="left:0px; top:-40px;"></canvas>').appendTo('#video-wrapper').draggable({ 
+      containment: "#video-wrapper",
+      scroll:      false,
+      stop: function(event, ui) {
+        var currentAnno = $.jStorage.get(ui.helper.context.id);
+        $('#' + fullAnnoID).sketch();
+        console.log(currentAnno);
+        $.jStorage.set(ui.helper.context.id,{
+          "id": ui.helper.context.id,
+          "type": 'tele',
+          "timeStart": currentAnno.timeStart,
+          "timeEnd": currentAnno.timeEnd,
+          "top": ui.position.top+'px',
+          "left": ui.position.left+'px',
+          "content": ''
+        });
+        $('video').get(0).play();
+        setTimeout(function(){
+          $('.annotation-telestrate').css('opacity', '0');
+        }, 1000);
+      }
+    });
+    $.jStorage.set(fullAnnoID,{
+      "id": fullAnnoID,
+      "type": 'tele',
+      "timeStart": start,
+      "timeEnd": start+3,
+      "top": '100px',
+      "left": '100px',
+      "content": ''
+    });
+    console.log(fullAnnoID);
   });
 
   // Initialize some shiz
@@ -156,7 +203,7 @@ $(function() {
     }
   });
 
-  $('.annotation-image').draggable({
+  $('.annotation-spot').draggable({
     containment: "#video-wrapper",
     scroll:      false,
     stop: function(event, ui) {
@@ -167,7 +214,7 @@ $(function() {
     		"timeEnd": '16',
     		"top": ui.position.top,
     		"left": ui.position.left,
-    		"content": ui.helper.context.innerHTML
+    		"content": ''
     	});
     	console.log(ui.helper.context.id);
     }
@@ -188,6 +235,6 @@ $(function() {
     	});
     	console.log(ui.helper.context.id);
     }
-  });  
+  });
 
 });

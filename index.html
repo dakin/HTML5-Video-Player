@@ -16,6 +16,12 @@
         <link rel="stylesheet" href="css/main.css">
 
         <script src="js/vendor/modernizr-2.6.1-respond-1.1.0.min.js"></script>
+
+        <script>
+            function flush_values(){
+                $.jStorage.flush();
+            }
+        </script>
         
     </head>
     <body>
@@ -49,6 +55,7 @@
                                 <li><div id="new-text-annotation"><img src="images/icons/speech-bubble.png" style="height: 12px; width: 12px;" /></div></li>
                                 <li><div id="new-telestration-annotation"><img src="images/icons/pencil.png" style="height: 12px; width: 12px;" /></div></li>
                                 <li><div id="new-spot-annotation"><img src="images/icons/polaroid.png" style="height: 12px; width: 12px;" /></div></li>
+                                <li><a href="javascript:flush_values()"><div><img src="images/icons/refresh.png" style="height: 12px; width: 12px;" /></div></a></li>
                             </ul>
                         </div>
 					</div>

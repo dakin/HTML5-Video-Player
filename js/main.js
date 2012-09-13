@@ -1,20 +1,13 @@
+var annotationTextId = 0;
+var annotationTelestrateId = 0;
+var annotationSpotId = 0;
+
 $(function() {
 	
   // Create a popcorn instance by calling Popcorn("#id-of-my-video")
   var pop = Popcorn("#hudlVideoPlayer");
-  var annotationTextId = 0;
-  var annotationTelestrateId = 0;
-  var annotationSpotId = 0;
 
-  $('video').mouseenter(function(){
-    $('#annotation-controls').show();
-  });
-  $('video').mouseleave(function(){
-    $('#annotation-controls').hide();
-  });
-  $('#annotation-controls').mouseover(function(){
-    $('#annotation-controls').show();
-  });
+  $('#annotation-controls').show();
   
   // Poop out the stuff that's already in your local storage!
   var allAnnos = $.jStorage.index();
@@ -25,6 +18,7 @@ $(function() {
 	  	var jqID = '#' + annoID;
 	  	var annoObject = $.jStorage.get(annoID);
 	  	if (annoObject.type == 'text') {
+	  		annotationTextId++;
 		  	$('<div id="' + annoObject.id + '" class="annotation-text hide" style="top: ' + annoObject.top + '; left: ' + annoObject.left + ';">' + annoObject.content + '</div>').appendTo('#video-wrapper');
 		  	pop.jquery({
 		  	  start: annoObject.timeStart,
@@ -37,19 +31,25 @@ $(function() {
           }
 		  	});
 		  } else if (annoObject.type == 'spot') {
-		  	$('<img id="' + annoObject.id + '" src="images/circle.png" class="annotation-spot hide" style="top: ' + annoObject.left + '; left: ' + annoObject.left + ';"/>').appendTo('#video-wrapper');
+		  	annotationSpotId++;
+		  	$('<img id="' + annoObject.id + '" src="images/circle.png" class="annotation-spot hide" style="top: ' + annoObject.top + '; left: ' + annoObject.left + ';"/>').appendTo('#video-wrapper');
 		  	pop.jquery({
 		  	  start: annoObject.timeStart,
 		  	  end: annoObject.timeEnd,
 		  	  onStart: function(){
-            $(jqID).removeClass('hide');
-          },
-          onEnd: function(){
-            $(jqID).addClass('hide');
-          }
-		  	});
+                $(jqID).removeClass('hide');
+                pop.pause();
+                setTimeout(function(){
+                	pop.play();
+                }, 3000);
+	          },
+	          onEnd: function(){
+	            $(jqID).addClass('hide');
+	          }
+			});
 		  } else if (annoObject.type == 'tele') {
-		  	$('<canvas id="' + annoObject.id + '" class="annotation-telestrate hide" width="852" height="420" style="top:-40px; left:0px;"></canvas>').appendTo('#video-wrapper');
+		  	annotationTelestrateId++;
+		  	$(annoObject.content).appendTo('#video-wrapper').sketch();;
 		  	pop.jquery({
 		  	  start: annoObject.timeStart,
 		  	  end: annoObject.timeEnd,
@@ -59,7 +59,7 @@ $(function() {
           onEnd: function(){
             $(jqID).addClass('hide');
           }
-		  	});
+	  	});
 		  };
 	  });
   }
@@ -130,8 +130,7 @@ $(function() {
           "timeStart": currentAnno.timeStart,
           "timeEnd": currentAnno.timeEnd,
           "top": ui.position.top+'px',
-          "left": ui.position.left+'px',
-          "content": ''
+          "left": ui.position.left+'px'
         });
         $('video').get(0).play();
         setTimeout(function(){
@@ -143,10 +142,9 @@ $(function() {
       "id": fullAnnoID,
       "type": 'spot',
       "timeStart": start,
-      "timeEnd": start+3,
+      "timeEnd": start+0.8,
       "top": '100px',
-      "left": '100px',
-      "content": ''
+      "left": '100px'
     });
     console.log(fullAnnoID);
   });
@@ -157,27 +155,8 @@ $(function() {
     var fullAnnoID = 'annotation-telestrate-' + annotationTelestrateId;
     var truestart = pop.currentTime();
     var start = Math.round(truestart);
-    $('<canvas id="' + fullAnnoID + '" class="annotation-telestrate" width="852" height="420" style="left:0px; top:-40px;"></canvas>').appendTo('#video-wrapper').draggable({ 
-      containment: "#video-wrapper",
-      scroll:      false,
-      stop: function(event, ui) {
-        var currentAnno = $.jStorage.get(ui.helper.context.id);
-        $('#' + fullAnnoID).sketch();
-        console.log(currentAnno);
-        $.jStorage.set(ui.helper.context.id,{
-          "id": ui.helper.context.id,
-          "type": 'tele',
-          "timeStart": currentAnno.timeStart,
-          "timeEnd": currentAnno.timeEnd,
-          "top": ui.position.top+'px',
-          "left": ui.position.left+'px',
-          "content": ''
-        });
-        setTimeout(function(){
-          $('.annotation-telestrate').css('opacity', '0');
-        }, 10000);
-      }
-    });
+    var newCanvasTele = '<canvas id="' + fullAnnoID + '" class="annotation-telestrate" width="852" height="420" style="left:0px; top:-40px;"></canvas>';
+    $(newCanvasTele).appendTo('#video-wrapper').sketch();
     $.jStorage.set(fullAnnoID,{
       "id": fullAnnoID,
       "type": 'tele',
@@ -185,7 +164,7 @@ $(function() {
       "timeEnd": start+3,
       "top": '100px',
       "left": '100px',
-      "content": ''
+      "content": newCanvasTele
     });
     console.log(fullAnnoID);
   });
@@ -223,23 +202,6 @@ $(function() {
     		"top": ui.position.top,
     		"left": ui.position.left,
     		"content": ''
-    	});
-    	console.log(ui.helper.context.id);
-    }
-  });
-
-  $('.annotation-telestrate').draggable({
-    containment: "#video-wrapper",
-    scroll:      false,
-    stop: function(event, ui) {
-    	$.jStorage.set(ui.helper.context.id,{
-    		"id": ui.helper.context.id,
-    		"type": 'tele',
-    		"timeStart": '10',
-    		"timeEnd": '11',
-    		"top": ui.position.top,
-    		"left": ui.position.left,
-    		"content": ui.helper.context.innerHTML
     	});
     	console.log(ui.helper.context.id);
     }

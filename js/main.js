@@ -5,6 +5,16 @@ $(function() {
   var annotationTextId = 0;
   var annotationTelestrateId = 0;
   var annotationSpotId = 0;
+
+  $('video').mouseenter(function(){
+    $('#annotation-controls').show();
+  });
+  $('video').mouseleave(function(){
+    $('#annotation-controls').hide();
+  });
+  $('#annotation-controls').mouseover(function(){
+    $('#annotation-controls').show();
+  });
   
   // Poop out the stuff that's already in your local storage!
   var allAnnos = $.jStorage.index();
@@ -143,7 +153,6 @@ $(function() {
 
   // Do a pile of shit to get the telestration annotation on the screen and store it's record, etc...
   $('#new-telestration-annotation').click(function(){
-    $('video').get(0).pause();
     annotationTelestrateId++;
     var fullAnnoID = 'annotation-telestrate-' + annotationTelestrateId;
     var truestart = pop.currentTime();
@@ -164,10 +173,9 @@ $(function() {
           "left": ui.position.left+'px',
           "content": ''
         });
-        $('video').get(0).play();
         setTimeout(function(){
           $('.annotation-telestrate').css('opacity', '0');
-        }, 1000);
+        }, 10000);
       }
     });
     $.jStorage.set(fullAnnoID,{

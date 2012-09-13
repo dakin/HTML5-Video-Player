@@ -195,6 +195,7 @@ body{font-family: Arial, "Helvetica Neue", Helvetica, sans-serif; font-size: 13p
     right: 20px;
     color: #fff;
     z-index: 99;
+    display: none;
 }
 #annotation-controls ul{list-style: none;}
 #annotation-controls li{margin: 0 0 10px 0;}
